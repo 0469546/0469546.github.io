@@ -123,8 +123,19 @@
         </div>
         
         <div id="ad-container">
-            <div class="ad-label">Рекламный блок</div>
-            <p>Здесь будет показана реклама от наших партнеров</p>
+          <!-- Блок для Яндекс.Рекламы -->
+          <script>
+            window.yaContextCb = window.yaContextCb || [];
+            window.yaContextCb.push(() => {
+              Ya.Context.AdvManager.render({
+                renderTo: "ad-container",
+                blockId: "R-A-15894432-1", // Ваш ID блока
+                onLoad: () => console.log("Реклама загружена"),
+                onRender: () => document.getElementById("confirm-btn").disabled = false,
+                onError: () => alert("Ошибка загрузки рекламы")
+              });
+            });
+          </script>
         </div>
 
         <button id="confirm-btn" class="btn" disabled>Я просмотрел рекламу</button>
