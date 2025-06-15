@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка FreeAI ArtBot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #ad-container {
+            margin: 20px 0;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border: 1px dashed #ccc;
+        }
+        .btn {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Поддержка FreeAI ArtBot</h1>
+        <p>Просмотр рекламы помогает развивать наш бесплатный бот</p>
+        
+        <div id="ad-container">
+            <p>Здесь будет показана реклама от Яндекс</p>
+            <!-- В рабочий вариант вставить код Яндекс.Рекламы -->
+            <!-- <script src="https://yandex.ru/ads/system/context.js"></script> -->
+        </div>
+
+        <button id="confirm-btn" class="btn" disabled>Я просмотрел рекламу</button>
+        <p id="status-message"></p>
+        
+        <p><small>После просмотра рекламы нажмите кнопку выше для возврата в бот</small></p>
+    </div>
+
+    <script>
+        // Эмуляция загрузки рекламы (в реальном проекте заменить на код Яндекс.Рекламы)
+        setTimeout(() => {
+            document.getElementById('ad-container').innerHTML = 
+                '<p>Спасибо за просмотр рекламы!</p>';
+            document.getElementById('confirm-btn').disabled = false;
+        }, 10000); // 10 секунд для теста
+
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            document.getElementById('status-message').textContent = "Возвращаем вас в Telegram...";
+            
+            // В реальном проекте использовать Telegram WebApp API
+            setTimeout(() => {
+                window.location.href = "https://t.me/FreeAI_artbot";
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
