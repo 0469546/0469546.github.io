@@ -28,28 +28,65 @@
         }
         h1 {
             color: #0066cc;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
         }
         .feature {
-            margin: 20px 0;
-            padding: 15px;
+            margin: 25px 0;
+            padding: 20px;
             background: #f5f5f5;
-            border-radius: 5px;
+            border-radius: 8px;
+            border-left: 4px solid #0066cc;
+        }
+        .feature h3 {
+            margin-top: 0;
+            color: #0066cc;
         }
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: #0066cc;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin: 10px 0;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0055aa;
+        }
+        .btn-secondary {
+            background: #666;
+        }
+        .btn-secondary:hover {
+            background: #555;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 40px;
             padding: 20px;
             border-top: 1px solid #eee;
             font-size: 0.9em;
+            color: #666;
+        }
+        .support-section {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
         }
     </style>
 </head>
@@ -57,40 +94,56 @@
     <div class="container">
         <header>
             <h1>FreeAI ArtBot</h1>
-            <p>Генерация уникальных изображений по вашему описанию прямо в Telegram</p>
-            <a href="https://t.me/FreeAI_artbot" class="btn">Открыть в Telegram</a>
+            <p class="subtitle">Генерация уникальных изображений по вашему описанию</p>
+            <div>
+                <a href="https://t.me/FreeAI_artbot" class="btn">Открыть в Telegram</a>
+                <a href="ad.html" class="btn btn-secondary">Поддержать проект</a>
+            </div>
         </header>
 
         <section>
-            <h2>Возможности бота</h2>
+            <h2 style="text-align: center;">Возможности бота</h2>
             
             <div class="feature">
                 <h3>🖼️ Генерация изображений</h3>
-                <p>Создавайте уникальные изображения по текстовому описанию с помощью нейросетей</p>
+                <p>Создавайте уникальные изображения по текстовому описанию с помощью нейросетей. Просто опишите, что вы хотите увидеть, и бот сделает все остальное.</p>
+                <!-- <img src="screenshot1.jpg" alt="Пример генерации" class="screenshot"> -->
             </div>
             
             <div class="feature">
                 <h3>🎨 Различные стили</h3>
-                <p>Выбирайте из множества стилей: реализм, аниме, фэнтези и другие</p>
+                <p>Выбирайте из множества стилей: реализм, аниме, фэнтези, скетч и другие. Каждое изображение будет уникальным и соответствовать выбранному стилю.</p>
+                <!-- <img src="screenshot2.jpg" alt="Пример стилей" class="screenshot"> -->
             </div>
             
             <div class="feature">
                 <h3>⚡ Быстрая обработка</h3>
-                <p>Получайте результаты всего за несколько секунд</p>
+                <p>Получайте результаты всего за несколько секунд. Наш бот использует мощные серверы для быстрой генерации изображений.</p>
+            </div>
+        </section>
+
+        <section class="support-section">
+            <h2>Поддержать проект</h2>
+            <p>Наш бот полностью бесплатен, но вы можете помочь его развитию</p>
+            <div>
+                <a href="ad.html" class="btn">Просмотреть рекламу</a>
+                <p><small>Доступно в веб-версии</small></p>
             </div>
         </section>
 
         <section>
-            <h2>Как использовать?</h2>
-            <ol>
-                <li>Откройте бота в Telegram</li>
-                <li>Введите описание изображения</li>
-                <li>Выберите стиль (если нужно)</li>
-                <li>Получите готовое изображение!</li>
-            </ol>
+            <h2 style="text-align: center;">Как использовать?</h2>
+            <div class="feature">
+                <ol style="padding-left: 20px;">
+                    <li><strong>Откройте</strong> бота в Telegram (@FreeAI_artbot)</li>
+                    <li><strong>Введите</strong> описание изображения</li>
+                    <li><strong>Выберите</strong> стиль (опционально)</li>
+                    <li><strong>Получите</strong> готовое изображение!</li>
+                </ol>
+                <!-- <img src="screenshot3.jpg" alt="Инструкция" class="screenshot"> -->
+            </div>
         </section>
 
-        <!-- В разделе <footer> заменить на: -->
         <footer>
             <p>
                 <a href="privacy.html">Политика конфиденциальности</a> | 
@@ -100,5 +153,20 @@
             <p>© 2023 FreeAI ArtBot. Все права защищены.</p>
         </footer>
     </div>
+
+    <!-- Яндекс.Метрика (добавьте после одобрения сайта) -->
+    <!--
+    <script>
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        ym(12345678, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/12345678" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    -->
 </body>
 </html>
