@@ -181,9 +181,9 @@
             const adId = params.get('ad_id'); // Получаем ad_id из URL
             const userId = params.get('user_id');
         
-            // Формируем правильный deep link
-            const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
-            const tgLink = `tg://resolve?domain=FreeAI_artbot&start=ad_watched_${adId}`;
+            // Формируем правильный deep link (упрощенный формат)
+            const deepLink = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+            const tgLink = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
         
             // 1. Для Telegram WebApp (встроенный браузер)
             if (window.Telegram?.WebApp) {
@@ -204,7 +204,7 @@
             // 2. Для мобильных устройств (вне Telegram)
             if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 // Сначала пробуем открыть в приложении Telegram
-                window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_watched_${adId}`;
+                window.location.href = tgLink;
                 
                 // Если через 500мс не сработало - fallback на web-версию
                 setTimeout(() => {
