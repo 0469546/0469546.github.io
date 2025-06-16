@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поддержка FreeAI ArtBot</title>
-    <meta name="yandex-verification" content="039c309cfa3c0f4f">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -102,14 +101,8 @@
             color: #0066cc;
             margin: 10px 0;
         }
-        #back-btn {
-            display: none;
-            margin-top: 15px;
-        }
     </style>
-    <script>
-        window.yandexContextAsyncCallbacks = window.yandexContextAsyncCallbacks || [];
-    </script>
+    <!-- Яндекс.Реклама -->
     <script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
@@ -131,7 +124,7 @@
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <div>Нажмите кнопку ниже для возврата в бот</div>
+                    <div>Нажмите "Я просмотрел" для возврата в бот</div>
                 </div>
             </div>
         </div>
@@ -142,95 +135,62 @@
         </div>
 
         <button id="confirm-btn" class="btn" disabled>Я просмотрел рекламу</button>
-        <button id="back-btn" class="btn" style="background: #4CAF50;">Вернуться в бот</button>
         <p id="status-message"></p>
         
         <div style="margin-top: 30px;">
             <a href="index.html" class="btn" style="background: #666;">← Вернуться на сайт</a>
+            <a href="https://t.me/FreeAI_artbot" class="btn">Открыть бота</a>
         </div>
     </div>
 
     <script>
-        // Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id');
-        const adId = urlParams.get('ad_id');
-        const redirect = urlParams.get('redirect');
-
-        // Инициализация рекламы Яндекс
-        window.yandexContextAsyncCallbacks.push(function() {
+        // Конфигурация Яндекс.Рекламы
+        window.yaContextCb = window.yaContextCb || [];
+        window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
                 renderTo: 'ad-container',
-                blockId: 'R-A-15994432-1',
-                onLoad: function() {
+                blockId: 'R-A-15894432-1',
+                onLoad: () => {
                     console.log('Реклама загружена');
-                    document.getElementById('status-message').textContent = "Реклама загружена";
-                    
-                    // Для случаев с redirect сразу активируем кнопку возврата
-                    if (redirect) {
-                        document.getElementById('back-btn').style.display = 'inline-block';
-                    }
+                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
                 },
-                onRender: function() {
+                onRender: () => {
                     console.log('Реклама показана');
                     document.getElementById('confirm-btn').disabled = false;
                     document.getElementById('status-message').textContent = "Реклама готова к просмотру";
                 },
-                onError: function(err) {
+                onError: (err) => {
                     console.error('Ошибка:', err);
-                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Вы можете вернуться в бот.";
-                    document.getElementById('back-btn').style.display = 'inline-block';
+                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
+                    // Резервный вариант
+                    setTimeout(() => {
+                        document.getElementById('confirm-btn').disabled = false;
+                    }, 5000);
                 }
             });
         });
 
-        // Обработка кнопки "Я просмотрел"
-        document.getElementById('confirm-btn').addEventListener('click', function() {
-            returnToBot();
-        });
-
-        // Обработка кнопки "Вернуться в бот"
-        document.getElementById('back-btn').addEventListener('click', function() {
-            returnToBot();
-        });
-
-        // Функция возврата в бота
-        function returnToBot() {
-            document.getElementById('status-message').textContent = "Возвращаем в бот...";
+        // Обработка подтверждения просмотра
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            document.getElementById('status-message').textContent = "Спасибо! Возвращаем вас в бот...";
+            document.getElementById('confirm-btn').disabled = true;
             
-            // Формируем ссылку для возврата
-            let returnUrl;
-            if (userId && adId) {
-                returnUrl = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}_${userId}`;
-            } else {
-                returnUrl = 'https://t.me/FreeAI_artbot';
-            }
-            
-            // Пробуем открыть в приложении Telegram
-            window.location.href = returnUrl;
-            
-            // Резервный вариант через 1 секунду
-            setTimeout(function() {
-                window.location.href = returnUrl.replace('tg://', 'https://t.me/');
+            // Переход обратно в бота с меткой
+            setTimeout(() => {
+                window.location.href = "https://t.me/FreeAI_artbot?start=ad_completed_" + Date.now();
             }, 1000);
-        }
-
-        // Автоматический возврат для redirect-режима
-        if (redirect && userId && adId) {
-            setTimeout(function() {
-                returnToBot();
-            }, 5000); // Авто-возврат через 5 секунд
-        }
+        });
 
         // Таймаут загрузки рекламы (30 сек)
-        setTimeout(function() {
+        setTimeout(() => {
             if (document.getElementById('confirm-btn').disabled) {
                 document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
-                document.getElementById('back-btn').style.display = 'inline-block';
+                document.getElementById('confirm-btn').disabled = false;
             }
         }, 30000);
     </script>
 
+    <!-- Резерв для отключённого JavaScript -->
     <noscript>
         <div style="text-align: center; padding: 20px; background: #fff8e1; border-radius: 8px; margin-top: 20px;">
             <p>Для просмотра рекламы включите JavaScript в браузере</p>
