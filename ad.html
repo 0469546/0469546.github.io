@@ -171,43 +171,43 @@
     
         // Обработчик кнопки подтверждения
         document.getElementById('confirm-btn').addEventListener('click', () => {
-        if (document.getElementById('confirm-btn').disabled) {
-            alert("Пожалуйста, дождитесь загрузки рекламы");
-            return;
-        }
-    
-        const params = new URLSearchParams(window.location.search);
-        const userId = params.get("user_id") || "unknown";
-        const adId = params.get("ad_id") || "unknown";
-        const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
-        
-        // Для мобильных устройств
-        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            // Пытаемся открыть в приложении Telegram
-            window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_watched_${adId}`;
-            
-            // Fallback для случаев, когда приложение не открылось
-            setTimeout(() => {
-                window.location.href = deepLink;
-            }, 1000);
-        } 
-        // Для веб-версии
-        else {
-            // Закрываем окно если это WebView
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.close();
-            } else if (window.TelegramWebViewProxy) {
-                try {
-                    window.TelegramWebViewProxy.postEvent('web_app_close');
-                } catch (e) {
-                    console.log("Не удалось закрыть WebView", e);
-                }
+            if (document.getElementById('confirm-btn').disabled) {
+                alert("Пожалуйста, дождитесь загрузки рекламы");
+                return;
             }
+        
+            const params = new URLSearchParams(window.location.search);
+            const userId = params.get("user_id") || "unknown";
+            const adId = params.get("ad_id") || "unknown";
+            const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
             
-            // Открываем deep link в новом окне
-            window.open(deepLink, '_blank');
-        }
-    });
+            // Для мобильных устройств
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // Пытаемся открыть в приложении Telegram
+                window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_watched_${adId}`;
+                
+                // Fallback для случаев, когда приложение не открылось
+                setTimeout(() => {
+                    window.location.href = deepLink;
+                }, 1000);
+            } 
+            // Для веб-версии
+            else {
+                // Закрываем окно если это WebView
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.close();
+                } else if (window.TelegramWebViewProxy) {
+                    try {
+                        window.TelegramWebViewProxy.postEvent('web_app_close');
+                    } catch (e) {
+                        console.log("Не удалось закрыть WebView", e);
+                    }
+                }
+                
+                // Открываем deep link в новом окне
+                window.open(deepLink, '_blank');
+            }
+        });
     
         // Таймаут (страховка)
         setTimeout(() => {
