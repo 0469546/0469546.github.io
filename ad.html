@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поддержка FreeAI ArtBot</title>
+    <meta name="yandex-verification" content="039c309cfa3c0f4f">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -102,7 +103,9 @@
             margin: 10px 0;
         }
     </style>
-    <!-- Яндекс.Реклама -->
+    <script>
+        window.yandexContextAsyncCallbacks = window.yandexContextAsyncCallbacks || [];
+    </script>
     <script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
@@ -144,45 +147,42 @@
     </div>
 
     <script>
-        // Конфигурация Яндекс.Рекламы
-        window.yaContextCb = window.yaContextCb || [];
-        window.yaContextCb.push(() => {
+        // Исправленный ID рекламного блока
+        const correctBlockId = "R-A-15994432-1";
+
+        window.yandexContextAsyncCallbacks.push(function() {
             Ya.Context.AdvManager.render({
                 renderTo: 'ad-container',
-                blockId: 'R-A-15894432-1',
-                onLoad: () => {
+                blockId: correctBlockId,
+                onLoad: function() {
                     console.log('Реклама загружена');
                     document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
                 },
-                onRender: () => {
+                onRender: function() {
                     console.log('Реклама показана');
                     document.getElementById('confirm-btn').disabled = false;
                     document.getElementById('status-message').textContent = "Реклама готова к просмотру";
                 },
-                onError: (err) => {
+                onError: function(err) {
                     console.error('Ошибка:', err);
                     document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
-                    // Резервный вариант
-                    setTimeout(() => {
+                    setTimeout(function() {
                         document.getElementById('confirm-btn').disabled = false;
                     }, 5000);
                 }
             });
         });
 
-        // Обработка подтверждения просмотра
-        document.getElementById('confirm-btn').addEventListener('click', () => {
+        document.getElementById('confirm-btn').addEventListener('click', function() {
             document.getElementById('status-message').textContent = "Спасибо! Возвращаем вас в бот...";
             document.getElementById('confirm-btn').disabled = true;
             
-            // Переход обратно в бота с меткой
-            setTimeout(() => {
+            setTimeout(function() {
                 window.location.href = "https://t.me/FreeAI_artbot?start=ad_completed_" + Date.now();
             }, 1000);
         });
 
-        // Таймаут загрузки рекламы (30 сек)
-        setTimeout(() => {
+        setTimeout(function() {
             if (document.getElementById('confirm-btn').disabled) {
                 document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
                 document.getElementById('confirm-btn').disabled = false;
@@ -190,7 +190,6 @@
         }, 30000);
     </script>
 
-    <!-- Резерв для отключённого JavaScript -->
     <noscript>
         <div style="text-align: center; padding: 20px; background: #fff8e1; border-radius: 8px; margin-top: 20px;">
             <p>Для просмотра рекламы включите JavaScript в браузере</p>
