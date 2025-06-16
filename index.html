@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreeAI ArtBot - Генератор изображений в Telegram</title>
-    <meta name="description" content="Официальный сайт Telegram-бота для генерации изображений с помощью искусственного интеллекта">
+    <title>Поддержка FreeAI ArtBot</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -12,161 +11,191 @@
             margin: 0;
             padding: 0;
             color: #333;
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
         }
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 20px auto;
             background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        header {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #eee;
         }
-        h1 {
+        .logo {
+            font-size: 24px;
             color: #0066cc;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 1.2em;
-            color: #666;
             margin-bottom: 20px;
+            font-weight: bold;
         }
-        .feature {
-            margin: 25px 0;
-            padding: 20px;
-            background: #f5f5f5;
+        #ad-container {
+            margin: 30px 0;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f9f9;
+            border: 2px dashed #ddd;
             border-radius: 8px;
-            border-left: 4px solid #0066cc;
+            position: relative;
         }
-        .feature h3 {
-            margin-top: 0;
-            color: #0066cc;
+        .ad-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            color: #666;
+            font-size: 14px;
         }
         .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            background: #0066cc;
+            background-color: #0066cc;
             color: white;
-            text-decoration: none;
+            border: none;
+            padding: 12px 25px;
             border-radius: 5px;
-            margin: 10px 5px;
-            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 15px 0;
+            text-decoration: none;
+            display: inline-block;
             transition: background 0.3s;
         }
         .btn:hover {
-            background: #0055aa;
+            background-color: #0055aa;
         }
-        .btn-secondary {
-            background: #666;
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
-        .btn-secondary:hover {
-            background: #555;
-        }
-        .screenshot {
-            max-width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 15px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid #eee;
-            font-size: 0.9em;
-            color: #666;
-        }
-        .support-section {
+        .info-box {
             background: #f0f8ff;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            margin: 30px 0;
-            text-align: center;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .step {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .step-number {
+            background: #0066cc;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        #status-message {
+            min-height: 20px;
+            color: #0066cc;
+            margin: 10px 0;
         }
     </style>
+    <!-- Яндекс.Реклама -->
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>FreeAI ArtBot</h1>
-            <p class="subtitle">Генерация уникальных изображений по вашему описанию</p>
-            <div>
-                <a href="https://t.me/FreeAI_artbot" class="btn">Открыть в Telegram</a>
-                <a href="ad.html" class="btn btn-secondary">Поддержать проект</a>
+        <div class="logo">FreeAI ArtBot</div>
+        <h1>Поддержать проект</h1>
+        <p>Просмотр рекламы помогает нам развивать бесплатный функционал бота</p>
+        
+        <div class="info-box">
+            <h3>Как это работает?</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Нажмите "Смотреть рекламу"</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Дождитесь полной загрузки рекламы</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Нажмите "Я просмотрел" для возврата в бот</div>
+                </div>
             </div>
-        </header>
+        </div>
+        
+        <div id="ad-container">
+            <div class="ad-label">Рекламный блок</div>
+            <p>Идёт загрузка рекламы...</p>
+        </div>
 
-        <section>
-            <h2 style="text-align: center;">Возможности бота</h2>
-            
-            <div class="feature">
-                <h3>🖼️ Генерация изображений</h3>
-                <p>Создавайте уникальные изображения по текстовому описанию с помощью нейросетей. Просто опишите, что вы хотите увидеть, и бот сделает все остальное.</p>
-                <!-- <img src="screenshot1.jpg" alt="Пример генерации" class="screenshot"> -->
-            </div>
-            
-            <div class="feature">
-                <h3>🎨 Различные стили</h3>
-                <p>Выбирайте из множества стилей: реализм, аниме, фэнтези, скетч и другие. Каждое изображение будет уникальным и соответствовать выбранному стилю.</p>
-                <!-- <img src="screenshot2.jpg" alt="Пример стилей" class="screenshot"> -->
-            </div>
-            
-            <div class="feature">
-                <h3>⚡ Быстрая обработка</h3>
-                <p>Получайте результаты всего за несколько секунд. Наш бот использует мощные серверы для быстрой генерации изображений.</p>
-            </div>
-        </section>
-
-        <section class="support-section">
-            <h2>Поддержать проект</h2>
-            <p>Наш бот полностью бесплатен, но вы можете помочь его развитию</p>
-            <div>
-                <a href="ad.html" class="btn">Просмотреть рекламу</a>
-                <p><small>Доступно в веб-версии</small></p>
-            </div>
-        </section>
-
-        <section>
-            <h2 style="text-align: center;">Как использовать?</h2>
-            <div class="feature">
-                <ol style="padding-left: 20px;">
-                    <li><strong>Откройте</strong> бота в Telegram (@FreeAI_artbot)</li>
-                    <li><strong>Введите</strong> описание изображения</li>
-                    <li><strong>Выберите</strong> стиль (опционально)</li>
-                    <li><strong>Получите</strong> готовое изображение!</li>
-                </ol>
-                <!-- <img src="screenshot3.jpg" alt="Инструкция" class="screenshot"> -->
-            </div>
-        </section>
-
-        <footer>
-            <p>
-                <a href="privacy.html">Политика конфиденциальности</a> | 
-                <a href="terms.html">Условия использования</a> | 
-                <a href="contact.html">Контакты</a>
-            </p>
-            <p>© 2023 FreeAI ArtBot. Все права защищены.</p>
-        </footer>
+        <button id="confirm-btn" class="btn" disabled>Я просмотрел рекламу</button>
+        <p id="status-message"></p>
+        
+        <div style="margin-top: 30px;">
+            <a href="index.html" class="btn" style="background: #666;">← Вернуться на сайт</a>
+            <a href="https://t.me/FreeAI_artbot" class="btn">Открыть бота</a>
+        </div>
     </div>
 
-    <!-- Яндекс.Метрика (добавьте после одобрения сайта) -->
-    <!--
     <script>
-        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-        ym(12345678, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true
+        // Конфигурация Яндекс.Рекламы
+        window.yaContextCb = window.yaContextCb || [];
+        window.yaContextCb.push(() => {
+            Ya.Context.AdvManager.render({
+                renderTo: 'ad-container',
+                blockId: 'R-A-15894432-1',
+                onLoad: () => {
+                    console.log('Реклама загружена');
+                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
+                },
+                onRender: () => {
+                    console.log('Реклама показана');
+                    document.getElementById('confirm-btn').disabled = false;
+                    document.getElementById('status-message').textContent = "Реклама готова к просмотру";
+                },
+                onError: (err) => {
+                    console.error('Ошибка:', err);
+                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
+                    // Резервный вариант
+                    setTimeout(() => {
+                        document.getElementById('confirm-btn').disabled = false;
+                    }, 5000);
+                }
+            });
         });
+
+        // Обработка подтверждения просмотра
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            document.getElementById('status-message').textContent = "Спасибо! Возвращаем вас в бот...";
+            document.getElementById('confirm-btn').disabled = true;
+            
+            // Переход обратно в бота с меткой
+            setTimeout(() => {
+                window.location.href = "https://t.me/FreeAI_artbot?start=ad_completed_" + Date.now();
+            }, 1000);
+        });
+
+        // Таймаут загрузки рекламы (30 сек)
+        setTimeout(() => {
+            if (document.getElementById('confirm-btn').disabled) {
+                document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
+                document.getElementById('confirm-btn').disabled = false;
+            }
+        }, 30000);
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/12345678" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    -->
+
+    <!-- Резерв для отключённого JavaScript -->
+    <noscript>
+        <div style="text-align: center; padding: 20px; background: #fff8e1; border-radius: 8px; margin-top: 20px;">
+            <p>Для просмотра рекламы включите JavaScript в браузере</p>
+            <a href="https://t.me/FreeAI_artbot" class="btn">Вернуться в бот</a>
+        </div>
+    </noscript>
 </body>
 </html>
