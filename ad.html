@@ -162,26 +162,26 @@
                 onError: (err) => {
                     console.error('Ошибка:', err);
                     document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
-                    // Резервный вариант
                     setTimeout(() => {
                         document.getElementById('confirm-btn').disabled = false;
                     }, 5000);
                 }
             });
         });
-
-        // Обработка подтверждения просмотра
+    
+        // ✅ Один корректный обработчик на кнопку
         document.getElementById('confirm-btn').addEventListener('click', () => {
             document.getElementById('status-message').textContent = "Спасибо! Возвращаем вас в бот...";
             document.getElementById('confirm-btn').disabled = true;
-            
-            // Переход обратно в бота с меткой
+    
             setTimeout(() => {
-                window.location.href = "https://t.me/FreeAI_artbot?start=ad_completed_" + Date.now();
+                const params = new URLSearchParams(window.location.search);
+                const adId = params.get("ad_id") || "unknown";
+                window.location.href = `https://t.me/FreeAI_artbot?start=ad_watched:${adId}`;
             }, 1000);
         });
-
-        // Таймаут загрузки рекламы (30 сек)
+    
+        // Таймаут (страховка)
         setTimeout(() => {
             if (document.getElementById('confirm-btn').disabled) {
                 document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
@@ -189,6 +189,7 @@
             }
         }, 30000);
     </script>
+
 
     <!-- Резерв для отключённого JavaScript -->
     <noscript>
