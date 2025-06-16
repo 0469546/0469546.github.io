@@ -1,160 +1,202 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Поддержка FreeAI ArtBot</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      color: #333;
-    }
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    .logo {
-      font-size: 28px;
-      color: #0077cc;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .info-box {
-      background: #f0f8ff;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: left;
-      margin-top: 20px;
-    }
-    .step {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .step-number {
-      background: #0077cc;
-      color: white;
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-    #ad-container {
-      margin: 30px 0;
-      min-height: 250px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f9f9f9;
-      border: 2px dashed #ddd;
-      border-radius: 8px;
-      position: relative;
-    }
-    .ad-label {
-      position: absolute;
-      top: -12px;
-      left: 20px;
-      background: white;
-      padding: 0 10px;
-      font-size: 14px;
-      color: #777;
-    }
-    .btn {
-      background-color: #0077cc;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 15px 10px;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-    #status-message {
-      color: #0077cc;
-      margin-top: 10px;
-    }
-  </style>
-  <script src="https://yandex.ru/ads/system/context.js" async></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка FreeAI ArtBot</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            font-size: 24px;
+            color: #0066cc;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        #ad-container {
+            margin: 30px 0;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f9f9;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            position: relative;
+        }
+        .ad-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 15px 0;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0055aa;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .info-box {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .step {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .step-number {
+            background: #0066cc;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        #status-message {
+            min-height: 20px;
+            color: #0066cc;
+            margin: 10px 0;
+        }
+    </style>
+    <!-- Яндекс.Реклама -->
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">FreeAI ArtBot</div>
-    <h2>Поддержите проект</h2>
-    <p>Просмотр рекламы помогает нам развивать бесплатный функционал бота.</p>
+    <div class="container">
+        <div class="logo">FreeAI ArtBot</div>
+        <h1>Поддержать проект</h1>
+        <p>Просмотр рекламы помогает нам развивать бесплатный функционал бота</p>
+        
+        <div class="info-box">
+            <h3>Как это работает?</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Нажмите "Смотреть рекламу"</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Дождитесь полной загрузки рекламы</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Нажмите "Я просмотрел" для возврата в бот</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="ad-container">
+            <div class="ad-label">Рекламный блок</div>
+            <p>Идёт загрузка рекламы...</p>
+        </div>
 
-    <div class="info-box">
-      <div class="step"><div class="step-number">1</div> Нажмите "Смотреть рекламу"</div>
-      <div class="step"><div class="step-number">2</div> Дождитесь полной загрузки рекламы</div>
-      <div class="step"><div class="step-number">3</div> Вернитесь в Telegram и нажмите "Я посмотрел"</div>
+        <button id="confirm-btn" class="btn" disabled>Я просмотрел рекламу</button>
+        <p id="status-message"></p>
+        
+        <div style="margin-top: 30px;">
+            <a href="index.html" class="btn" style="background: #666;">← Вернуться на сайт</a>
+            <a href="https://t.me/FreeAI_artbot" class="btn">Открыть бота</a>
+        </div>
     </div>
 
-    <div id="ad-container">
-      <div class="ad-label">Рекламный блок</div>
-      <p>Загрузка рекламы...</p>
-    </div>
+    <script>
+        // Конфигурация Яндекс.Рекламы
+        window.yaContextCb = window.yaContextCb || [];
+        window.yaContextCb.push(() => {
+            Ya.Context.AdvManager.render({
+                renderTo: 'ad-container',
+                blockId: 'R-A-15894432-1',
+                onLoad: () => {
+                    console.log('Реклама загружена');
+                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
+                },
+                onRender: () => {
+                    console.log('Реклама показана');
+                    document.getElementById('confirm-btn').disabled = false;
+                    document.getElementById('status-message').textContent = "Реклама готова к просмотру";
+                },
+                onError: (err) => {
+                    console.error('Ошибка:', err);
+                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
+                    // Резервный вариант
+                    setTimeout(() => {
+                        document.getElementById('confirm-btn').disabled = false;
+                    }, 5000);
+                }
+            });
+        });
 
-    <p id="status-message"></p>
+        // Обработка подтверждения просмотра
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            document.getElementById('status-message').textContent = "Спасибо! Возвращаем вас в бот...";
+            document.getElementById('confirm-btn').disabled = true;
+            
+            // Переход обратно в бота с меткой
+            setTimeout(() => {
+                window.location.href = "https://t.me/FreeAI_artbot?start=ad_completed_" + Date.now();
+            }, 1000);
+        });
 
-    <div style="margin-top: 20px;">
-      <a id="back-link" href="https://t.me/FreeAI_artbot" class="btn" disabled>Я посмотрел</a>
-      <a href="https://t.me/FreeAI_artbot" class="btn" style="background: #666;">↩ Вернуться в бот</a>
-    </div>
-  </div>
+        // Таймаут загрузки рекламы (30 сек)
+        setTimeout(() => {
+            if (document.getElementById('confirm-btn').disabled) {
+                document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
+                document.getElementById('confirm-btn').disabled = false;
+            }
+        }, 30000);
+    </script>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const adId = params.get("ad_id");
-
-    window.yaContextCb = window.yaContextCb || [];
-    window.yaContextCb.push(() => {
-      Ya.Context.AdvManager.render({
-        renderTo: "ad-container",
-        blockId: "R-A-15894432-1",
-        onLoad: () => {
-          document.getElementById("status-message").textContent = "Реклама загружена, дождитесь окончания...";
-        },
-        onRender: () => {
-          document.getElementById("status-message").textContent = "✅ Вы можете вернуться в бота";
-          const backLink = document.getElementById("back-link");
-          if (adId) {
-            backLink.href = `https://t.me/FreeAI_artbot?start=ad_watched:${adId}`;
-          }
-          backLink.removeAttribute("disabled");
-        },
-        onError: () => {
-          document.getElementById("status-message").textContent = "⚠️ Ошибка загрузки. Попробуйте позже.";
-          document.getElementById("back-link").removeAttribute("disabled");
-        }
-      });
-    });
-
-    // Защита: если не загрузилась через 30 сек, всё равно разблокируем
-    setTimeout(() => {
-      const backLink = document.getElementById("back-link");
-      if (backLink.hasAttribute("disabled")) {
-        document.getElementById("status-message").textContent = "⏱️ Время ожидания истекло. Вы можете вернуться в бот.";
-        backLink.removeAttribute("disabled");
-      }
-    }, 30000);
-  </script>
+    <!-- Резерв для отключённого JavaScript -->
+    <noscript>
+        <div style="text-align: center; padding: 20px; background: #fff8e1; border-radius: 8px; margin-top: 20px;">
+            <p>Для просмотра рекламы включите JavaScript в браузере</p>
+            <a href="https://t.me/FreeAI_artbot" class="btn">Вернуться в бот</a>
+        </div>
+    </noscript>
 </body>
 </html>
 
