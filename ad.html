@@ -182,7 +182,7 @@
             const userId = params.get('user_id');
             
             // Формируем deep link для возврата в бота
-            const deepLink = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+            const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
             
             // 1. Для Telegram WebApp (встроенный браузер)
             if (window.Telegram?.WebApp) {
