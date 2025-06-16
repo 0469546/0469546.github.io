@@ -171,35 +171,54 @@
     
         // Обработчик кнопки подтверждения
         document.getElementById('confirm-btn').addEventListener('click', () => {
+            // Проверяем, загружена ли реклама
+            if (document.getElementById('confirm-btn').disabled) {
+                alert("Пожалуйста, дождитесь окончания загрузки рекламы");
+                return;
+            }
+        
             const params = new URLSearchParams(window.location.search);
-            const adId = params.get('ad_id');
+            const adId = params.get('ad_id'); // Получаем ad_id из URL
             const userId = params.get('user_id');
             
-            // 1. Пытаемся закрыть WebView если он есть
+            // Формируем deep link для возврата в бота
+            const deepLink = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+            
+            // 1. Для Telegram WebApp (встроенный браузер)
             if (window.Telegram?.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'ad_watched',
-                    ad_id: adId,
-                    user_id: userId
-                }));
-                Telegram.WebApp.close();
+                try {
+                    // Отправляем данные в бота перед закрытием
+                    Telegram.WebApp.sendData(JSON.stringify({
+                        status: "watched",
+                        ad_id: adId,
+                        user_id: userId
+                    }));
+                    // Закрываем WebView
+                    Telegram.WebApp.close();
+                } catch (e) {
+                    console.error("Ошибка WebApp:", e);
+                    // Fallback: открываем стандартную ссылку
+                    window.location.href = deepLink;
+                }
                 return;
             }
             
-            // 2. Для мобильных устройств
+            // 2. Для мобильных устройств (вне Telegram)
             if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Пытаемся открыть в приложении
+                // Сначала пробуем открыть в приложении Telegram
                 window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
                 
-                // Фолбэк на web-версию через 500мс
+                // Если через 500мс не сработало - открываем web-версию
                 setTimeout(() => {
-                    window.location.href = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+                    if (!document.hidden) { // Проверяем, не закрылось ли уже окно
+                        window.location.href = deepLink;
+                    }
                 }, 500);
                 return;
             }
             
             // 3. Для десктопных браузеров
-            window.open(`https://t.me/FreeAI_artbot?start=ad_${adId}`, '_blank');
+            window.open(deepLink, '_blank');
         });
             
         // Таймаут (страховка)
