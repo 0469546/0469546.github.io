@@ -171,44 +171,37 @@
     
         // Обработчик кнопки подтверждения
         document.getElementById('confirm-btn').addEventListener('click', () => {
-            if (document.getElementById('confirm-btn').disabled) {
-                alert("Пожалуйста, дождитесь загрузки рекламы");
+            const params = new URLSearchParams(window.location.search);
+            const adId = params.get('ad_id');
+            const userId = params.get('user_id');
+            
+            // 1. Пытаемся закрыть WebView если он есть
+            if (window.Telegram?.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'ad_watched',
+                    ad_id: adId,
+                    user_id: userId
+                }));
+                Telegram.WebApp.close();
                 return;
             }
-        
-            const params = new URLSearchParams(window.location.search);
-            const userId = params.get("user_id") || "unknown";
-            const adId = params.get("ad_id") || "unknown";
-            const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
             
-            // Для мобильных устройств
+            // 2. Для мобильных устройств
             if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Пытаемся открыть в приложении Telegram
-                window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_watched_${adId}`;
+                // Пытаемся открыть в приложении
+                window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
                 
-                // Fallback для случаев, когда приложение не открылось
+                // Фолбэк на web-версию через 500мс
                 setTimeout(() => {
-                    window.location.href = deepLink;
-                }, 1000);
-            } 
-            // Для веб-версии
-            else {
-                // Закрываем окно если это WebView
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.close();
-                } else if (window.TelegramWebViewProxy) {
-                    try {
-                        window.TelegramWebViewProxy.postEvent('web_app_close');
-                    } catch (e) {
-                        console.log("Не удалось закрыть WebView", e);
-                    }
-                }
-                
-                // Открываем deep link в новом окне
-                window.open(deepLink, '_blank');
+                    window.location.href = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+                }, 500);
+                return;
             }
+            
+            // 3. Для десктопных браузеров
+            window.open(`https://t.me/FreeAI_artbot?start=ad_${adId}`, '_blank');
         });
-    
+            
         // Таймаут (страховка)
         setTimeout(() => {
             if (document.getElementById('confirm-btn').disabled) {
