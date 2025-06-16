@@ -169,7 +169,7 @@
             });
         });
     
-        // Обработчик кнопки подтверждения
+       // Обработчик кнопки подтверждения
         document.getElementById('confirm-btn').addEventListener('click', () => {
             // Проверяем, загружена ли реклама
             if (document.getElementById('confirm-btn').disabled) {
@@ -178,19 +178,19 @@
             }
         
             const params = new URLSearchParams(window.location.search);
-            const adId = params.get('ad_id'); // Получаем ad_id из URL
+            const rawAdId = params.get('ad_id'); // Получаем UUID без префиксов (например: "7fb50198-abc4-4f0e-9255-1bcc54db7fd9")
             const userId = params.get('user_id');
         
-            // Формируем правильный deep link (упрощенный формат)
-            const deepLink = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
-            const tgLink = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
+            // Формируем deep link БЕЗ ПРЕФИКСА (совместимость с исправленным cmd_start)
+            const deepLink = `https://t.me/FreeAI_artbot?start=${rawAdId}`;
+            const tgLink = `tg://resolve?domain=FreeAI_artbot&start=${rawAdId}`;
         
             // 1. Для Telegram WebApp (встроенный браузер)
             if (window.Telegram?.WebApp) {
                 try {
                     Telegram.WebApp.sendData(JSON.stringify({
                         status: "watched",
-                        ad_id: adId,
+                        ad_id: rawAdId,  // Передаем чистый UUID
                         user_id: userId
                     }));
                     Telegram.WebApp.close();
@@ -203,10 +203,10 @@
         
             // 2. Для мобильных устройств (вне Telegram)
             if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Сначала пробуем открыть в приложении Telegram
+                // Пробуем открыть в приложении Telegram
                 window.location.href = tgLink;
                 
-                // Если через 500мс не сработало - fallback на web-версию
+                // Фолбэк на web-версию через 500 мс
                 setTimeout(() => {
                     if (!document.hidden) {
                         window.location.href = deepLink;
