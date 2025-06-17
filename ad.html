@@ -143,7 +143,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         // Конфигурация Яндекс.Рекламы
         window.yaContextCb = window.yaContextCb || [];
         window.yaContextCb.push(() => {
@@ -160,8 +160,8 @@
                     document.getElementById('status-message').textContent = "Реклама готова к просмотру";
                 },
                 onError: (err) => {
-                    console.error('Ошибка:', err);
-                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
+                    console.error('Ошибка загрузки рекламы:', err);
+                    document.getElementById('status-message').textContent = "⚠️ Ошибка загрузки рекламы. Вы можете нажать 'Я просмотрел'.";
                     setTimeout(() => {
                         document.getElementById('confirm-btn').disabled = false;
                     }, 5000);
@@ -169,62 +169,35 @@
             });
         });
     
-       // Обработчик кнопки подтверждения
+        // Подтверждение просмотра рекламы
         document.getElementById('confirm-btn').addEventListener('click', () => {
-            // Проверяем, загружена ли реклама
             if (document.getElementById('confirm-btn').disabled) {
-                alert("Пожалуйста, дождитесь окончания загрузки рекламы");
+                alert("⏳ Подождите окончания загрузки рекламы.");
                 return;
             }
-        
+    
             const params = new URLSearchParams(window.location.search);
-            const rawAdId = params.get('ad_id'); // Получаем UUID без префиксов (например: "7fb50198-abc4-4f0e-9255-1bcc54db7fd9")
-            const userId = params.get('user_id');
-        
-            // Формируем deep link БЕЗ ПРЕФИКСА (совместимость с исправленным cmd_start)
-            const deepLink = `https://t.me/FreeAI_artbot?start=${rawAdId}`;
-            const tgLink = `tg://resolve?domain=FreeAI_artbot&start=${rawAdId}`;
-        
-            // 1. Для Telegram WebApp (встроенный браузер)
+            const rawAdId = params.get('ad_id');
+    
             if (window.Telegram?.WebApp) {
                 try {
-                    Telegram.WebApp.sendData(JSON.stringify({
-                        status: "watched",
-                        ad_id: rawAdId,  // Передаем чистый UUID
-                        user_id: userId
-                    }));
+                    Telegram.WebApp.sendData(`ad_watched:${rawAdId}`);
                     Telegram.WebApp.close();
                 } catch (e) {
-                    console.error("Ошибка WebApp:", e);
-                    window.location.href = deepLink;
+                    console.error("Ошибка отправки WebApp данных:", e);
+                    alert("⚠️ Ошибка возврата в бот. Попробуйте вручную.");
                 }
-                return;
+            } else {
+                alert("Пожалуйста, вернитесь в Telegram и нажмите 'Я просмотрел рекламу'.");
             }
-        
-            // 2. Для мобильных устройств (вне Telegram)
-            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // Пробуем открыть в приложении Telegram
-                window.location.href = tgLink;
-                
-                // Фолбэк на web-версию через 500 мс
-                setTimeout(() => {
-                    if (!document.hidden) {
-                        window.location.href = deepLink;
-                    }
-                }, 500);
-                return;
-            }
-                    
-            // 3. Для десктопных браузеров
-            window.open(deepLink, '_blank');
         });
-
-            
-        // Таймаут (страховка)
+    
+        // Страховка: если реклама не загрузилась — разблокировать кнопку через 45 сек
         setTimeout(() => {
-            if (document.getElementById('confirm-btn').disabled) {
-                document.getElementById('status-message').textContent = "Реклама не загрузилась. Вы можете вернуться в бот.";
-                document.getElementById('confirm-btn').disabled = false;
+            const btn = document.getElementById('confirm-btn');
+            if (btn.disabled) {
+                btn.disabled = false;
+                document.getElementById('status-message').textContent = "⏱️ Истекло время ожидания. Вы можете нажать 'Я просмотрел'.";
             }
         }, 45000);
     </script>
