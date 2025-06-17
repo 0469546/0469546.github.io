@@ -144,88 +144,139 @@
     </div>
 
    <script>
+        // Инициализация рекламного блока
         window.yaContextCb = window.yaContextCb || [];
         window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
                 renderTo: 'ad-container',
                 blockId: 'R-A-15894432-1',
-    
+                
+                // Обработчики состояния рекламы
                 onLoad: () => {
-                    console.log('✅ Реклама загружена');
-                    document.getElementById('status-message').textContent = "📦 Реклама загружена. Пожалуйста, дождитесь начала показа.";
+                    console.log('Реклама загружена');
+                    updateStatus("Реклама загружена. Дождитесь начала...", "info");
                 },
-    
+                
                 onRender: () => {
-                    console.log('🎥 Реклама показана');
-                    document.getElementById('confirm-btn').disabled = false;
-                    document.getElementById('status-message').textContent = "✅ Реклама готова к подтверждению.";
+                    console.log('Реклама показана');
+                    enableConfirmButton();
+                    updateStatus("Реклама готова к просмотру", "success");
+                    startViewingTimer();
                 },
-    
+                
                 onError: (err) => {
-                    console.error('❌ Ошибка загрузки рекламы:', err);
-                    document.getElementById('status-message').textContent = "⚠️ Ошибка при загрузке. Вы можете нажать кнопку ниже.";
-                    setTimeout(() => {
-                        document.getElementById('confirm-btn').disabled = false;
-                    }, 5000);
+                    console.error('Ошибка:', err);
+                    updateStatus("Ошибка загрузки. Попробуйте позже.", "error");
+                    forceEnableButton();
                 }
             });
         });
     
-        // ✅ Подготовка WebApp Telegram
-        window.addEventListener("DOMContentLoaded", () => {
-            if (window.Telegram?.WebApp) {
-                Telegram.WebApp.ready();
-                Telegram.WebApp.expand();
-                console.log("✅ Telegram WebApp инициализирован");
-            } else {
-                alert("⚠️ Откройте эту рекламу через Telegram.");
-            }
-        });
+        // Инициализация WebApp Telegram
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            Telegram.WebApp.BackButton.show();
+            Telegram.WebApp.BackButton.onClick(handleBackButton);
+        }
     
-        // ✅ Кнопка подтверждения
-        document.getElementById('confirm-btn').addEventListener('click', () => {
+        // Основные функции
+        function updateStatus(text, type) {
+            const statusEl = document.getElementById('status-message');
+            statusEl.textContent = text;
+            statusEl.className = `status-${type}`;
+        }
+    
+        function enableConfirmButton() {
+            const btn = document.getElementById('confirm-btn');
+            btn.disabled = false;
+            btn.classList.remove('btn-disabled');
+            btn.classList.add('btn-active');
+        }
+    
+        function forceEnableButton() {
+            setTimeout(() => {
+                enableConfirmButton();
+                updateStatus("Можете подтвердить просмотр", "warning");
+            }, 5000);
+        }
+    
+        function startViewingTimer() {
+            // Минимальное время просмотра (15 сек)
+            setTimeout(() => {
+                document.getElementById('min-view-time').style.display = 'none';
+            }, 15000);
+        }
+    
+        function handleBackButton() {
+            Telegram.WebApp.close();
+        }
+    
+        // Обработчик кнопки подтверждения
+        document.getElementById('confirm-btn').addEventListener('click', async () => {
             const btn = document.getElementById('confirm-btn');
             if (btn.disabled) {
-                alert("⏳ Пожалуйста, дождитесь окончания рекламы.");
+                showAlert("Дождитесь окончания загрузки рекламы");
                 return;
             }
     
             btn.disabled = true;
+            updateStatus("Подтверждаем просмотр...", "processing");
     
             const params = new URLSearchParams(window.location.search);
             const adId = params.get('ad_id');
+            const userId = params.get('user_id');
     
             if (!adId) {
-                alert("❌ Не удалось определить ID рекламы.");
+                showAlert("Ошибка: неверный ID рекламы");
                 btn.disabled = false;
                 return;
             }
     
+            // 1. Попытка отправки через WebApp
             if (window.Telegram?.WebApp) {
                 try {
-                    Telegram.WebApp.sendData(`ad_watched:${adId}`);
+                    await Telegram.WebApp.sendData(JSON.stringify({
+                        action: "ad_watched",
+                        ad_id: adId,
+                        user_id: userId
+                    }));
                     Telegram.WebApp.close();
+                    return;
                 } catch (e) {
-                    console.error("❌ Ошибка отправки данных в Telegram:", e);
-                    alert("⚠️ Ошибка возврата в Telegram. Попробуйте ещё раз.");
-                    btn.disabled = false;
+                    console.error("WebApp error:", e);
                 }
-            } else {
-                alert("⚠️ Откройте через Telegram.");
-                btn.disabled = false;
             }
+    
+            // 2. Для мобильных устройств
+            if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+                window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
+                setTimeout(() => {
+                    if (!document.hidden) {
+                        window.location.href = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+                    }
+                }, 500);
+                return;
+            }
+    
+            // 3. Для десктопов
+            window.open(`https://t.me/FreeAI_artbot?start=ad_${adId}`, '_blank');
         });
     
-        // ⏱️ Безопасный таймаут (разблокировка через 45 секунд)
+        // Таймаут безопасности
         setTimeout(() => {
-            const btn = document.getElementById('confirm-btn');
-            if (btn.disabled) {
-                btn.disabled = false;
-                document.getElementById('status-message').textContent = "⏱️ Время ожидания истекло. Можете подтвердить вручную.";
-            }
+            enableConfirmButton();
+            updateStatus("Готово к подтверждению", "ready");
         }, 45000);
+    
+        function showAlert(message) {
+            if (window.Telegram?.WebApp) {
+                Telegram.WebApp.showAlert(message);
+            } else {
+                alert(message);
+            }
+        }
     </script>
-
 
 
 
