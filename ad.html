@@ -143,124 +143,82 @@
         </div>
     </div>
 
-   <script>
-        // Инициализация рекламного блока
+  <script>
+        // Конфигурация Яндекс.Рекламы
         window.yaContextCb = window.yaContextCb || [];
         window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
                 renderTo: 'ad-container',
                 blockId: 'R-A-15894432-1',
-                
-                // Обработчики состояния рекламы
                 onLoad: () => {
                     console.log('Реклама загружена');
-                    updateStatus("Реклама загружена. Дождитесь начала...", "info");
+                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
                 },
-                
                 onRender: () => {
                     console.log('Реклама показана');
-                    enableConfirmButton();
-                    updateStatus("Реклама готова к просмотру", "success");
-                    startViewingTimer();
+                    document.getElementById('confirm-btn').disabled = false;
+                    document.getElementById('status-message').textContent = "Реклама готова к просмотру";
                 },
-                
                 onError: (err) => {
                     console.error('Ошибка:', err);
-                    updateStatus("Ошибка загрузки. Попробуйте позже.", "error");
-                    forceEnableButton();
+                    document.getElementById('status-message').textContent = "Ошибка загрузки рекламы. Попробуйте позже.";
+                    setTimeout(() => {
+                        document.getElementById('confirm-btn').disabled = false;
+                    }, 5000);
                 }
             });
         });
     
-        // Инициализация WebApp Telegram
-        if (window.Telegram?.WebApp) {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
-            Telegram.WebApp.BackButton.show();
-            Telegram.WebApp.BackButton.onClick(handleBackButton);
-        }
-    
-        // Основные функции
-        function updateStatus(text, type) {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = text;
-            statusEl.className = `status-${type}`;
-        }
-    
-        function enableConfirmButton() {
-            const btn = document.getElementById('confirm-btn');
-            btn.disabled = false;
-            btn.classList.remove('btn-disabled');
-            btn.classList.add('btn-active');
-        }
-    
-        function forceEnableButton() {
-            setTimeout(() => {
-                enableConfirmButton();
-                updateStatus("Можете подтвердить просмотр", "warning");
-            }, 5000);
-        }
-    
-        function startViewingTimer() {
-            // Минимальное время просмотра (15 сек)
-            setTimeout(() => {
-                document.getElementById('min-view-time').style.display = 'none';
-            }, 15000);
-        }
-    
-        function handleBackButton() {
-            Telegram.WebApp.close();
-        }
-    
         // Обработчик кнопки подтверждения
-        document.getElementById('confirm-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('confirm-btn');
-            if (btn.disabled) {
-                showAlert("Дождитесь окончания загрузки рекламы");
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            // Проверяем, загружена ли реклама
+            if (document.getElementById('confirm-btn').disabled) {
+                alert("Пожалуйста, дождитесь окончания загрузки рекламы");
                 return;
             }
-    
-            btn.disabled = true;
-            updateStatus("Подтверждаем просмотр...", "processing");
-    
+        
             const params = new URLSearchParams(window.location.search);
-            const adId = params.get('ad_id');
+            const adId = params.get('ad_id'); // Получаем ad_id из URL
             const userId = params.get('user_id');
-    
-            if (!adId) {
-                showAlert("Ошибка: неверный ID рекламы");
-                btn.disabled = false;
-                return;
-            }
-    
-            // 1. Попытка отправки через WebApp
+            
+            // Формируем deep link для возврата в бота
+            const deepLink = `https://t.me/FreeAI_artbot?start=ad_watched_${adId}`;
+            
+            // 1. Для Telegram WebApp (встроенный браузер)
             if (window.Telegram?.WebApp) {
                 try {
-                    await Telegram.WebApp.sendData(JSON.stringify({
-                        action: "ad_watched",
+                    // Отправляем данные в бота перед закрытием
+                    Telegram.WebApp.sendData(JSON.stringify({
+                        status: "watched",
                         ad_id: adId,
                         user_id: userId
                     }));
+                    // Закрываем WebView
                     Telegram.WebApp.close();
-                    return;
                 } catch (e) {
-                    console.error("WebApp error:", e);
+                    console.error("Ошибка WebApp:", e);
+                    // Fallback: открываем стандартную ссылку
+                    window.location.href = deepLink;
                 }
+                return;
             }
-    
-            // 2. Для мобильных устройств
-            if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+            
+            // 2. Для мобильных устройств (вне Telegram)
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // Сначала пробуем открыть в приложении Telegram
                 window.location.href = `tg://resolve?domain=FreeAI_artbot&start=ad_${adId}`;
+                
+                // Если через 500мс не сработало - открываем web-версию
                 setTimeout(() => {
-                    if (!document.hidden) {
-                        window.location.href = `https://t.me/FreeAI_artbot?start=ad_${adId}`;
+                    if (!document.hidden) { // Проверяем, не закрылось ли уже окно
+                        window.location.href = deepLink;
                     }
                 }, 500);
                 return;
             }
-    
-            // 3. Для десктопов
-            window.open(`https://t.me/FreeAI_artbot?start=ad_${adId}`, '_blank');
+            
+            // 3. Для десктопных браузеров
+            window.open(deepLink, '_blank');
         });
     
         // Таймаут безопасности
