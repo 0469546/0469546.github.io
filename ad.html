@@ -144,7 +144,6 @@
     </div>
 
    <script>
-        // Конфигурация Яндекс.Рекламы
         window.yaContextCb = window.yaContextCb || [];
         window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
@@ -152,12 +151,12 @@
                 blockId: 'R-A-15894432-1',
                 onLoad: () => {
                     console.log('Реклама загружена');
-                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания";
+                    document.getElementById('status-message').textContent = "Реклама загружена, дождитесь окончания.";
                 },
                 onRender: () => {
                     console.log('Реклама показана');
                     document.getElementById('confirm-btn').disabled = false;
-                    document.getElementById('status-message').textContent = "Реклама готова к просмотру";
+                    document.getElementById('status-message').textContent = "🎥 Реклама готова к просмотру.";
                 },
                 onError: (err) => {
                     console.error('Ошибка загрузки рекламы:', err);
@@ -169,38 +168,56 @@
             });
         });
     
-        // Подтверждение просмотра рекламы
+        // При загрузке документа инициализируем WebApp
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                console.log("✅ Telegram WebApp API готов");
+            } else {
+                alert("⚠️ Откройте рекламу из Telegram, а не в браузере.");
+            }
+        });
+    
+        // Обработчик кнопки
         document.getElementById('confirm-btn').addEventListener('click', () => {
-            if (document.getElementById('confirm-btn').disabled) {
+            const btn = document.getElementById('confirm-btn');
+    
+            if (btn.disabled) {
                 alert("⏳ Подождите окончания загрузки рекламы.");
                 return;
             }
     
+            btn.disabled = true;
+    
             const params = new URLSearchParams(window.location.search);
             const rawAdId = params.get('ad_id');
     
-            if (window.Telegram?.WebApp) {
+            if (window.Telegram && Telegram.WebApp) {
                 try {
                     Telegram.WebApp.sendData(`ad_watched:${rawAdId}`);
                     Telegram.WebApp.close();
                 } catch (e) {
-                    console.error("Ошибка отправки WebApp данных:", e);
+                    console.error("Ошибка WebApp:", e);
                     alert("⚠️ Ошибка возврата в бот. Попробуйте вручную.");
+                    btn.disabled = false;
                 }
             } else {
-                alert("Пожалуйста, вернитесь в Telegram и нажмите 'Я просмотрел рекламу'.");
+                alert("⚠️ Пожалуйста, вернитесь в Telegram и нажмите 'Я просмотрел рекламу'.");
+                btn.disabled = false;
             }
         });
     
-        // Страховка: если реклама не загрузилась — разблокировать кнопку через 45 сек
+        // Страховка: разблокировать кнопку через 45 секунд, если ничего не произошло
         setTimeout(() => {
             const btn = document.getElementById('confirm-btn');
             if (btn.disabled) {
                 btn.disabled = false;
-                document.getElementById('status-message').textContent = "⏱️ Истекло время ожидания. Вы можете нажать 'Я просмотрел'.";
+                document.getElementById('status-message').textContent = "⏱️ Время ожидания истекло. Можете нажать 'Я просмотрел'.";
             }
         }, 45000);
     </script>
+
 
 
     <!-- Резерв для отключённого JavaScript -->
